@@ -1,0 +1,104 @@
+<UserControl x:Class="Neronga.Views.HistoryPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Neronga.Localization"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:vm="clr-namespace:Neronga.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008/mc"
+             mc:Ignorable="d"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance vm:HistoryPageViewModel}">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vm:TrackedFileRowViewModel}">
+            <Border Padding="14,10" Margin="0,4" CornerRadius="8"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    Cursor="Hand" MouseLeftButtonUp="TrackedFileRow_MouseLeftButtonUp">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock FontWeight="SemiBold" FontSize="13.5">
+                            <Run Text="{Binding Vendor, Mode=OneWay}" />
+                            <Run Text="{loc:T common.separator}" />
+                            <Run Text="{Binding Label, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock Text="{Binding FullPath}" FontSize="11.5" Opacity="0.65"
+                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding FullPath}" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{Binding KindLabel}" Opacity="0.6" FontSize="11.5"
+                               VerticalAlignment="Center" Margin="10,0" />
+                    <Border Grid.Column="2" Background="{StaticResource NerongaYellowSoftBrush}" CornerRadius="9"
+                            Padding="8,2" VerticalAlignment="Center" Margin="10,0">
+                        <TextBlock FontSize="11.5" Foreground="{StaticResource NerongaInkBrush}"
+                                   Text="{Binding EditsText}" />
+                    </Border>
+                    <TextBlock Grid.Column="3" Text="{Binding LastEditedText}" Opacity="0.6" FontSize="11.5"
+                               VerticalAlignment="Center" Width="140" />
+                    <ui:Button Grid.Column="4" Appearance="Transparent" ToolTip="{loc:T history.tooltip.delete}"
+                               Command="{Binding DeleteCommand}">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="Delete24" />
+                        </ui:Button.Icon>
+                    </ui:Button>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="24,16,24,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{loc:T history.title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding SizeText}" Opacity="0.55" FontSize="12"
+                       VerticalAlignment="Center" Margin="14,3,0,0" />
+
+            <ui:Button Grid.Column="3" Content="{loc:T common.refresh}" Appearance="Secondary" Command="{Binding ReloadCommand}" Margin="0,0,8,0">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="ArrowSync24" />
+                </ui:Button.Icon>
+            </ui:Button>
+            <ui:Button Grid.Column="4" Content="{loc:T history.deleteAll}" Appearance="Danger" Command="{Binding DeleteAllCommand}"
+                       Visibility="{Binding IsEmpty, Converter={StaticResource InverseBoolToVis}}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Delete24" />
+                </ui:Button.Icon>
+            </ui:Button>
+        </Grid>
+
+        <ui:InfoBar Grid.Row="1" Margin="0,0,0,12"
+                    IsOpen="{Binding HasNotice, Mode=TwoWay}" IsClosable="True"
+                    Message="{Binding NoticeText}" Severity="Success" />
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Rows}" Focusable="False" />
+                <StackPanel Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}"
+                            HorizontalAlignment="Center" Margin="0,60,0,0">
+                    <ui:SymbolIcon Symbol="History24" FontSize="32" Opacity="0.4" HorizontalAlignment="Center" />
+                    <TextBlock Text="{loc:T history.empty.title}" Opacity="0.6" Margin="0,10,0,0" />
+                    <TextBlock Text="{loc:T history.empty.hint}"
+                               Opacity="0.5" FontSize="12" Margin="0,4,0,0" HorizontalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,102 @@
+<ui:FluentWindow x:Class="Neronga.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Neronga.Localization"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:vm="clr-namespace:Neronga.ViewModels"
+        xmlns:views="clr-namespace:Neronga.Views"
+        Title="neronga"
+        Height="820" Width="1220" MinHeight="560" MinWidth="860"
+        WindowBackdropType="Mica"
+        ExtendsContentIntoTitleBar="True"
+        WindowStartupLocation="CenterScreen">
+
+    <ui:FluentWindow.Resources>
+        <DataTemplate DataType="{x:Type vm:ListPageViewModel}">
+            <views:ListPageView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HiddenPageViewModel}">
+            <views:HiddenPageView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HistoryPageViewModel}">
+            <views:HistoryPageView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsPageViewModel}">
+            <views:SettingsPageView />
+        </DataTemplate>
+    </ui:FluentWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="neronga">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/app.ico" />
+            </ui:TitleBar.Icon>
+            <ui:TitleBar.Header>
+                <TextBlock Text="NERONGA" Margin="4,0,0,0" FontSize="13" FontWeight="SemiBold"
+                           Opacity="0.85" VerticalAlignment="Center" />
+            </ui:TitleBar.Header>
+        </ui:TitleBar>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="216" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 左ナビレール -->
+            <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}">
+                <StackPanel Margin="0,12,0,0">
+                    <RadioButton x:Name="NavList" GroupName="Nav" IsChecked="True"
+                                 Style="{StaticResource NerongaNavRadioButton}"
+                                 Checked="NavList_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="List24" Margin="0,0,10,0" />
+                            <TextBlock Text="{loc:T nav.items}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ListPage.TotalItemCount}" FontSize="11.5" Opacity="0.7"
+                                       Margin="8,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="NavHidden" GroupName="Nav"
+                                 Style="{StaticResource NerongaNavRadioButton}"
+                                 Checked="NavHidden_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="EyeOff24" Margin="0,0,10,0" />
+                            <TextBlock Text="{loc:T nav.hidden}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding HiddenPage.Items.Count}" FontSize="11.5" Opacity="0.7"
+                                       Margin="8,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="NavHistory" GroupName="Nav"
+                                 Style="{StaticResource NerongaNavRadioButton}"
+                                 Checked="NavHistory_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="History24" Margin="0,0,10,0" />
+                            <TextBlock Text="{loc:T nav.history}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <Separator Margin="16,10" />
+
+                    <RadioButton x:Name="NavSettings" GroupName="Nav"
+                                 Style="{StaticResource NerongaNavRadioButton}"
+                                 Checked="NavSettings_Checked">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Settings24" Margin="0,0,10,0" />
+                            <TextBlock Text="{loc:T nav.settings}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </Border>
+
+            <!-- コンテンツ領域 -->
+            <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Focusable="False" />
+        </Grid>
+    </Grid>
+</ui:FluentWindow>
